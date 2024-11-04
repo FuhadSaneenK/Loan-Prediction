@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Loan Approval Prediction</title>
+    <link rel="stylesheet" href="static/styles.css">
+</head>
+<body>
+    <div class="page-container">
+        <div class="main-container">
+            <h1>Loan Approval Prediction</h1>
+            
+            <form action="/predict" method="post" id="loanForm" autocomplete="off">
+                <div class="form-container">
+                    <!-- Personal Information Section -->
+                    <div class="section">
+                        <h2 class="section-title">Personal Information</h2>
+                        <label>No of Dependents:</label>
+                        <input type="number" name="no_of_dependents" required value="{{ data.get('no_of_dependents', '') }}">
+                        
+                        <label>Education:</label>
+                        <select name="education" required>
+                            <option value="Graduate" {% if data.get('education') == 'Graduate' %}selected{% endif %}>Graduate</option>
+                            <option value="Not Graduate" {% if data.get('education') == 'Not Graduate' %}selected{% endif %}>Not Graduate</option>
+                        </select>
+                        
+                        <label>Self Employed:</label>
+                        <select name="self_employed" required>
+                            <option value="Yes" {% if data.get('self_employed') == 'Yes' %}selected{% endif %}>Yes</option>
+                            <option value="No" {% if data.get('self_employed') == 'No' %}selected{% endif %}>No</option>
+                        </select>
+
+                        <label>Annual Income:</label>
+                        <input type="number" name="income_annum" step="any" required value="{{ data.get('income_annum', '') }}">
+                    </div>
+
+                    <!-- Loan Details Section -->
+                    <div class="section">
+                        <h2 class="section-title">Loan Details</h2>
+                        <label>Loan Amount:</label>
+                        <input type="number" name="loan_amount" step="any" required value="{{ data.get('loan_amount', '') }}">
+                        
+                        <label>Loan Term:</label>
+                        <input type="number" name="loan_term" step="any" required value="{{ data.get('loan_term', '') }}">
+                        
+                        <label>CIBIL Score:</label>
+                        <input type="number" name="cibil_score" required value="{{ data.get('cibil_score', '') }}">
+                    </div>
+
+                    <!-- Assets Information Section -->
+                    <div class="section">
+                        <h2 class="section-title">Assets Information</h2>
+                        <label>Residential Assets Value:</label>
+                        <input type="number" name="residential_assets_value" step="any" required value="{{ data.get('residential_assets_value', '') }}">
+                        
+                        <label>Commercial Assets Value:</label>
+                        <input type="number" name="commercial_assets_value" step="any" required value="{{ data.get('commercial_assets_value', '') }}">
+                    </div>
+
+                    <!-- Additional Assets Section -->
+                    <div class="section">
+                        <h2 class="section-title">Additional Assets</h2>
+                        <label>Luxury Assets Value:</label>
+                        <input type="number" name="luxury_assets_value" step="any" required value="{{ data.get('luxury_assets_value', '') }}">
+                        
+                        <label>Bank Asset Value:</label>
+                        <input type="number" name="bank_asset_value" step="any" required value="{{ data.get('bank_asset_value', '') }}">
+                    </div>
+
+                    <!-- Buttons Container -->
+                    <div class="buttons-container">
+                        <button type="submit" class="submit-btn">Predict Loan Approval</button>
+                        <button type="button" class="clear-btn" onclick="clearForm()">Clear Form</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+
+        <!-- Result Sidebar -->
+        <div class="result-sidebar">
+            <div class="prediction-container">
+                <h2 class="prediction-title">Prediction Result</h2>
+                {% if prediction_text %}
+                    <div class="prediction-box {% if 'Approved' in prediction_text %}prediction-approved{% else %}prediction-rejected{% endif %}">
+                        {% if 'Approved' in prediction_text %}
+                            <svg class="status-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                                <path d="M20 6L9 17L4 12" stroke-linecap="round" stroke-linejoin="round"/>
+                            </svg>
+                            <div>APPROVED</div>
+                        {% else %}
+                            <svg class="status-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                                <path d="M18 6L6 18M6 6l12 12" stroke-linecap="round" stroke-linejoin="round"/>
+                            </svg>
+                            <div>REJECTED</div>
+                        {% endif %}
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function clearForm() {
+            document.getElementById("loanForm").reset();
+            const predictionBox = document.querySelector('.prediction-box');
+            if (predictionBox) {
+                predictionBox.style.display = 'none';
+            }
+        }
+    </script>
+</body>
+</html>
